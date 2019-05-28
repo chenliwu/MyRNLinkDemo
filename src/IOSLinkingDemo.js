@@ -68,7 +68,8 @@ export default class IOSLinkingDemo extends Component {
                 <CustomButton url={'mailto:309623978@qq.com'} text="点击进行发邮件"/>
                 <CustomButton url={'dfy:888999'} text="无法打开url"/>
                 <CustomButton url={'geo:37.484847,-122.148386'} text="点击打开一个地图位置"/>
-                <CustomButton url={'dfy://reactnative.vip/data'} text="自己打开自己"/>
+                <CustomButton url={'myrnlinkdemo://'} text="自己打开自己"/>
+                <CustomButton url={'myrnlinkdemo1://'} text="打开myrnlindemo1"/>
             </View>
         );
     }
