@@ -1,0 +1,3 @@
+rootProject.name = 'MyRNLinkDemo'
+
+include ':app'
