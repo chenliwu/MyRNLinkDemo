@@ -16,6 +16,23 @@ export default class LinkingDemo extends Component {
     }
 
     componentWillMount() {
+
+        ///问题记录：Linking.getInitialURL()方法放到生命周期componentWillMount()方法中，
+        // Android端当APP处于运行状态时，从外部URL唤醒APP，getInitialURL()返回的URL为null。
+
+        // //Linking.getInitialURL()：IOS端中，APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
+        // //android端：APP未运行，或APP处于运行状态中，getInitialURL()方法都可以正常处理
+        // Linking.getInitialURL().then((url) => {
+        //     this.handleUrl(url);
+        // }).catch(err => {
+        //     console.error('错误信息为:', err);
+        //     alert('错误信息为:' + err);
+        // });
+
+    }
+
+    componentDidMount() {
+
         //Linking.getInitialURL()：IOS端中，APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
         //android端：APP未运行，或APP处于运行状态中，getInitialURL()方法都可以正常处理
         Linking.getInitialURL().then((url) => {
@@ -25,17 +42,6 @@ export default class LinkingDemo extends Component {
             alert('错误信息为:' + err);
         });
 
-    }
-
-    componentDidMount() {
-        // //Linking.getInitialURL()：IOS端中，APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
-        // //android端：APP未运行，或APP处于运行状态中，getInitialURL()方法都可以正常处理
-        // Linking.getInitialURL().then((url) => {
-        //     this.handleUrl(url);
-        // }).catch(err => {
-        //     console.error('错误信息为:', err);
-        //     alert('错误信息为:' + err);
-        // });
         if (isIos) {
             //要在 App 启动后也监听传入的 App 链接
             Linking.addEventListener('url', this._handleOpenURL);
