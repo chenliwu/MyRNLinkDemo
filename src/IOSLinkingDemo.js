@@ -11,7 +11,8 @@ import {
     Text,
     Linking,
     TouchableHighlight,
-    View
+    View,
+    ScrollView
 } from 'react-native';
 
 
@@ -19,6 +20,7 @@ import PropTypes from 'prop-types';
 
 
 class CustomButton extends Component {
+
     constructor(props) {
         super(props);
     }
@@ -48,29 +50,101 @@ class CustomButton extends Component {
 }
 
 export default class IOSLinkingDemo extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            url: '',
+            params: ''
+        };
+    }
+
     componentDidMount() {
-        var url = Linking.getInitialURL().then((url) => {
+        //Linking.getInitialURL()：APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
+        //对于 iOS 来说，如果要在 App 启动后也监听传入的 App 链接，那么首先需要在项目中链接RCTLinking，
+        let that = this;
+        Linking.getInitialURL().then((url) => {
             if (url) {
                 console.log('捕捉的URL地址为: ' + url);
+                alert('捕捉的URL地址为: ' + url);
+                let urlObj = this.getUrlParamsToJSON(url);
+                let params = '';
+                if (urlObj) {
+                    for (let key in urlObj) {
+                        params = params + `${key}=${urlObj[key]}\n`;
+                    }
+                    that.setState({
+                        params: params
+                    });
+                }
+
             } else {
                 console.log('url为空');
+                alert('url为空');
             }
-        }).catch(err => console.error('错误信息为:', err));
+        }).catch(err => {
+            console.error('错误信息为:', err);
+            alert('错误信息为:' + err);
+        });
     }
+
+
+    // 取URL地址参数转为对象
+    handleUrl = (url) => {
+        const urlObj = {};
+        const middleStr = url.split('?');
+        const paramPairStr = middleStr[1].split('&');
+        paramPairStr.forEach((element) => {
+            const singleParamStr = element.split('=');
+            urlObj[singleParamStr[0]] = singleParamStr[1];
+        });
+        return urlObj;
+    };
+
+
+    getUrlParamsToJSON = (url) => {
+        var params = {};
+        //去除所有空格
+        url = url.replace(/\s/ig, '');
+        //正则表达式匹配
+        url.replace(/([^?&=]+)=([^&]+)/g, (_, key, value) => {
+            params[key] = value;
+        });
+        return params;
+    };
+
+
+    /**
+     * 获取URL的查询参数
+     */
+    getUrlParamsToMap = (url) => {
+        var params = new Map();
+        //去除所有空格
+        url = url.replace(/\s/ig, '');
+        //正则表达式匹配
+        url.replace(/([^?&=]+)=([^&]+)/g, (_, key, value) => {
+            params.set(key, value);
+        });
+        return params;
+    };
+
 
     render() {
         return (
-            <View>
-                <CustomButton url={'http://www.reactnative.vip'} text="点击打开http网页"/>
-                <CustomButton url={'https://www.baidu.com'} text="点击打开https网页"/>
-                <CustomButton url={'smsto:13667377378'} text="点击进行发送短信"/>
-                <CustomButton url={'tel:13667377378'} text="点击进行打电话"/>
-                <CustomButton url={'mailto:309623978@qq.com'} text="点击进行发邮件"/>
-                <CustomButton url={'dfy:888999'} text="无法打开url"/>
-                <CustomButton url={'geo:37.484847,-122.148386'} text="点击打开一个地图位置"/>
-                <CustomButton url={'myrnlinkdemo://'} text="自己打开自己"/>
+            <ScrollView style={{flex: 1}}>
+                {/*<CustomButton url={'http://www.reactnative.vip'} text="点击打开http网页"/>*/}
+                {/*<CustomButton url={'https://www.baidu.com'} text="点击打开https网页"/>*/}
+                {/*<CustomButton url={'smsto:13667377378'} text="点击进行发送短信"/>*/}
+                {/*<CustomButton url={'tel:13667377378'} text="点击进行打电话"/>*/}
+                {/*<CustomButton url={'mailto:309623978@qq.com'} text="点击进行发邮件"/>*/}
+                {/*<CustomButton url={'dfy:888999'} text="无法打开url"/>*/}
+                {/*<CustomButton url={'geo:37.484847,-122.148386'} text="点击打开一个地图位置"/>*/}
+                {/*<CustomButton url={'myrnlinkdemo://'} text="自己打开自己"/>*/}
                 <CustomButton url={'myrnlinkdemo1://'} text="打开myrnlindemo1"/>
-            </View>
+                <Text>
+                    url参数：{this.state.params}
+                </Text>
+            </ScrollView>
         );
     }
 }
