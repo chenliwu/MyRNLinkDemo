@@ -61,44 +61,44 @@ export default class IOSLinkingDemo extends Component {
 
     componentDidMount() {
         //Linking.getInitialURL()：APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
-        //对于 iOS 来说，如果要在 App 启动后也监听传入的 App 链接，那么首先需要在项目中链接RCTLinking，
-        let that = this;
         Linking.getInitialURL().then((url) => {
-            if (url) {
-                console.log('捕捉的URL地址为: ' + url);
-                alert('捕捉的URL地址为: ' + url);
-                let urlObj = this.getUrlParamsToJSON(url);
-                let params = '';
-                if (urlObj) {
-                    for (let key in urlObj) {
-                        params = params + `${key}=${urlObj[key]}\n`;
-                    }
-                    that.setState({
-                        params: params
-                    });
-                }
-
-            } else {
-                console.log('url为空');
-                alert('url为空');
-            }
+            this.handleUrl(url);
         }).catch(err => {
             console.error('错误信息为:', err);
             alert('错误信息为:' + err);
         });
+        //要在 App 启动后也监听传入的 App 链接
+        Linking.addEventListener('url', this._handleOpenURL);
     }
 
+    componentWillMount() {
+        Linking.removeEventListener('url', this._handleOpenURL);
+    }
+
+    _handleOpenURL = (event) => {
+        this.handleUrl(event.url);
+    };
 
     // 取URL地址参数转为对象
     handleUrl = (url) => {
-        const urlObj = {};
-        const middleStr = url.split('?');
-        const paramPairStr = middleStr[1].split('&');
-        paramPairStr.forEach((element) => {
-            const singleParamStr = element.split('=');
-            urlObj[singleParamStr[0]] = singleParamStr[1];
-        });
-        return urlObj;
+        if (url) {
+            console.log('捕捉的URL地址为: ' + url);
+            alert('捕捉的URL地址为: ' + url);
+            let urlObj = this.getUrlParamsToJSON(url);
+            let params = '';
+            if (urlObj) {
+                for (let key in urlObj) {
+                    params = params + `${key}=${urlObj[key]}\n`;
+                }
+                this.setState({
+                    params: params
+                });
+            }
+
+        } else {
+            console.log('url为空');
+            alert('url为空');
+        }
     };
 
 
