@@ -60,7 +60,7 @@ export default class IOSLinkingDemo extends Component {
     }
 
     componentDidMount() {
-        //Linking.getInitialURL()：IOS端中，APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
+        //Linking.getInitialURL()：APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
         Linking.getInitialURL().then((url) => {
             this.handleUrl(url);
         }).catch(err => {

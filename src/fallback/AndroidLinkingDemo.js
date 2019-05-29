@@ -20,7 +20,6 @@ import PropTypes from 'prop-types';
 
 
 class CustomButton extends Component {
-
     constructor(props) {
         super(props);
     }
@@ -36,20 +35,23 @@ class CustomButton extends Component {
             <TouchableHighlight
                 style={styles.button}
                 underlayColor="#a5a5a5"
-                onPress={() => Linking.canOpenURL(this.props.url).then(supported => {
-                    if (supported) {
-                        Linking.openURL(this.props.url);
-                    } else {
-                        console.log('无法打开该URI: ' + this.props.url);
-                    }
-                })}>
+                onPress={() => {
+                    //如果想在打开链接前先检查是否安装了对应的应用，则调用以下方法：
+                    Linking.canOpenURL(this.props.url).then(supported => {
+                        if (supported) {
+                            Linking.openURL(this.props.url);
+                        } else {
+                            console.log('无法打开该URI: ' + this.props.url);
+                        }
+                    });
+                }}>
                 <Text style={styles.buttonText}>{this.props.text}</Text>
             </TouchableHighlight>
         );
     }
 }
 
-export default class IOSLinkingDemo extends Component {
+export default class AndroidLinkingDemo extends Component {
 
     constructor(props) {
         super(props);
@@ -60,7 +62,7 @@ export default class IOSLinkingDemo extends Component {
     }
 
     componentDidMount() {
-        //Linking.getInitialURL()：IOS端中，APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
+        //Linking.getInitialURL()：APP在运行当中，这个方法是不能处理APP被外部URL调起的情况的。
         Linking.getInitialURL().then((url) => {
             this.handleUrl(url);
         }).catch(err => {
@@ -71,7 +73,7 @@ export default class IOSLinkingDemo extends Component {
         Linking.addEventListener('url', this._handleOpenURL);
     }
 
-    componentWillUnmount() {
+    componentWillMount() {
         Linking.removeEventListener('url', this._handleOpenURL);
     }
 
@@ -114,24 +116,11 @@ export default class IOSLinkingDemo extends Component {
     };
 
 
-    /**
-     * 获取URL的查询参数
-     */
-    getUrlParamsToMap = (url) => {
-        var params = new Map();
-        //去除所有空格
-        url = url.replace(/\s/ig, '');
-        //正则表达式匹配
-        url.replace(/([^?&=]+)=([^&]+)/g, (_, key, value) => {
-            params.set(key, value);
-        });
-        return params;
-    };
-
-
     render() {
         return (
-            <ScrollView style={{flex: 1}}>
+            <ScrollView style={{
+                flex: 1
+            }}>
                 {/*<CustomButton url={'http://www.reactnative.vip'} text="点击打开http网页"/>*/}
                 {/*<CustomButton url={'https://www.baidu.com'} text="点击打开https网页"/>*/}
                 {/*<CustomButton url={'smsto:13667377378'} text="点击进行发送短信"/>*/}
@@ -139,11 +128,13 @@ export default class IOSLinkingDemo extends Component {
                 {/*<CustomButton url={'mailto:309623978@qq.com'} text="点击进行发邮件"/>*/}
                 {/*<CustomButton url={'dfy:888999'} text="无法打开url"/>*/}
                 {/*<CustomButton url={'geo:37.484847,-122.148386'} text="点击打开一个地图位置"/>*/}
-                {/*<CustomButton url={'myrnlinkdemo://'} text="自己打开自己"/>*/}
-                <CustomButton url={'myrnlinkdemo1://'} text="打开myrnlindemo1"/>
+                {/*<CustomButton url={'myrnlinkdemo://index'} text="自己打开自己"/>*/}
+                <CustomButton url={'myrnlinkdemo1://index/data'} text="打开myrnlinkdemo1 APP"/>
+
                 <Text>
                     url参数：{this.state.params}
                 </Text>
+
             </ScrollView>
         );
     }
@@ -161,3 +152,4 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
 });
+

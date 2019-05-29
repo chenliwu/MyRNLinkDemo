@@ -22,12 +22,14 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "myrnlinkdemo://index -->
-                <data
-                    android:scheme="myrnlinkdemo"
-                    android:host="index" />
+                <!--<data-->
+                <!--android:scheme="myrnlinkdemo"-->
+                <!--android:host="index" />-->
+                <data android:scheme="myrnlinkdemo" />
             </intent-filter>
 
         </activity>
