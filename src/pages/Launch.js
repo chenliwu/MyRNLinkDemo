@@ -3,13 +3,19 @@ import {
     View,
     Text,
     StyleSheet,
-    Button
+    Button,
+    Platform
 } from 'react-native';
 
 import {
     SafeAreaView
 } from 'react-navigation';
 import GlobalStatusBar from "../components/GlobalStatusBar";
+
+import LinkingUtils from './../utils/LinkingUtils';
+
+
+const isIos = Platform.OS === 'ios';
 
 
 export default class Launch extends Component {
@@ -23,6 +29,19 @@ export default class Launch extends Component {
 
     constructor(props, context) {
         super(props, context);
+    }
+
+    componentDidMount(): void {
+        LinkingUtils.addInitialURLListener(this.props.navigation);
+        if (isIos) {
+            LinkingUtils.addIOSEventListener(this.props.navigation);
+        }
+    }
+
+    componentWillUnmount(): void {
+        if (isIos) {
+            LinkingUtils.removeIOSEventListener();
+        }
     }
 
     render() {

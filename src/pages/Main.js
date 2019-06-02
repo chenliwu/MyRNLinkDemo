@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Button} from 'react-native';
+import {StyleSheet, Text, View, Button, Platform} from 'react-native';
 import GlobalStatusBar from "../components/GlobalStatusBar";
+import LinkingUtils from "../utils/LinkingUtils";
 
+const isIos = Platform.OS === 'ios';
 
 export default class Main extends Component {
 
@@ -14,6 +16,19 @@ export default class Main extends Component {
 
     constructor(props, context) {
         super(props, context);
+    }
+
+    componentDidMount(): void {
+        LinkingUtils.addInitialURLListener(this.props.navigation);
+        if (isIos) {
+            LinkingUtils.addIOSEventListener(this.props.navigation);
+        }
+    }
+
+    componentWillUnmount(): void {
+        if (isIos) {
+            LinkingUtils.removeIOSEventListener();
+        }
     }
 
 
