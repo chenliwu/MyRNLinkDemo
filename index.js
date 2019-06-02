@@ -1,5 +1,4 @@
 import { AppRegistry,Platform } from 'react-native';
-import App from './App';
 
 // import AndroidLinkingDemo from './src/AndroidLinkingDemo';
 // import IOSLinkingDemo from './src/IOSLinkingDemo';
@@ -12,8 +11,10 @@ import App from './App';
 // }
 
 
-import LinkingDemo from './src/LinkingDemo';
+//import LinkingDemo from './src/LinkingDemo';
 
 
-//AppRegistry.registerComponent('MyRNLinkDemo', () => App);
-AppRegistry.registerComponent('MyRNLinkDemo', () => LinkingDemo);
+import App from './src/App';
+
+
+AppRegistry.registerComponent('MyRNLinkDemo', () => App);
